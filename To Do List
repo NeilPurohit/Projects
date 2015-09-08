@@ -1,0 +1,120 @@
+//
+//  FirstViewController.swift
+//  To Do List
+//
+//  Created by Neil Purohit on 7/13/15.
+//  Copyright (c) 2015 practice TurnUp. All rights reserved.
+//
+
+import UIKit
+
+var toDoList = [String]()
+
+class FirstViewController: UIViewController, UITableViewDelegate {
+
+    @IBOutlet var listView: UITableView!
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        if NSUserDefaults.standardUserDefaults().objectForKey("toDoList") != nil {
+            
+            toDoList = NSUserDefaults.standardUserDefaults().objectForKey("toDoList") as! [String]
+
+        }
+        
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return toDoList.count
+    }
+    
+
+    
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        
+        let cell = UITableViewCell(style: UITableViewCellStyle.Default, reuseIdentifier: "cell")
+        
+        cell.textLabel?.text = toDoList[indexPath.row]
+        
+        return cell
+        
+        
+        
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            toDoList.removeAtIndex(indexPath.row)
+            NSUserDefaults.standardUserDefaults().setObject(toDoList, forKey: "toDoList")
+            listView.reloadData()
+        }
+    }
+    
+    override func viewDidAppear(animated: Bool) {
+        
+        listView.reloadData()
+    }
+
+    
+    
+    
+
+
+}
+
+
+
+//
+//  SecondViewController.swift
+//  To Do List
+//
+//  Created by Neil Purohit on 7/13/15.
+//  Copyright (c) 2015 practice TurnUp. All rights reserved.
+//
+
+import UIKit
+
+class SecondViewController: UIViewController, UITextFieldDelegate {
+
+    @IBOutlet var itemToAdd: UITextField!
+    
+    
+    @IBAction func AddItem(sender: AnyObject) {
+        
+        toDoList.append(itemToAdd.text)
+        itemToAdd.text = ""
+        NSUserDefaults.standardUserDefaults().setObject(toDoList, forKey: "toDoList")
+        
+    }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        self.itemToAdd.delegate = self
+        // Do any additional setup after loading the view, typically from a nib.
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+        self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn (textField: UITextField) ->Bool {
+        
+        itemToAdd.resignFirstResponder()
+        return true
+        
+    }
+}
+
